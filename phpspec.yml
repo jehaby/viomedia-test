@@ -1,0 +1,4 @@
+suites:
+    jehaby_suite:
+        namespace: Jehaby\Viomedia
+        psr4_prefix: Jehaby\Viomedia
