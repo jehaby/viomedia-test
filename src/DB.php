@@ -7,35 +7,41 @@ use PDO;
 use PDOException;
 
 
-class DB
+class DB extends PDO
 {
 
-    private static $db;
+    public function __construct() {
+        try {
+            parent::__construct("sqlite:storage/sqlite.db");
+            parent::exec('PRAGMA foreign_keys = ON;');
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
+    }
 
+    public function exec($statement, $errorMessage = NULL)
+    {
+        try {
+            $res = parent::exec($statement);
+            $this->checkQueryResult($res, $errorMessage);
+            return $res;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
+    }
 
-    private function __construct() {
-
-        if (is_null(self::$db)) {
-            try {
-                self::$db = new PDO("sqlite:storage/sqlite.db");
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                die();
+    private function checkQueryResult($res, $errorMessage)
+    {
+        if ($res === false) {
+            print_r($this->db->errorInfo());
+        } else {
+            if ($errorMessage != NULL) {
+                echo $errorMessage;
             }
         }
-
-
     }
 
-
-    private function __clone() {}
-
-
-    public static function getInstance()
-    {
-
-
-        return self::$db;
-    }
 
 }

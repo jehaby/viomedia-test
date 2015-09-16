@@ -13,22 +13,25 @@ class DataManager
 
     public function __construct()
     {
-        $this->db = DB::getInstance();
+        $this->db = new DB();
     }
 
 
-    public function createFolder($id = 0)
+    public function createFolder($parent_id = NULL, $title = NULL)
     {
+        $this->db->beginTransaction();
+        $statement = $this->db->prepare("INSERT INTO folders(parent_id, title) VALUES (?, ?)");
+        $statement->execute([$parent_id, $title]);
+        $statement = $this->db->prepare("INSERT INTO folders(parent_id, title) VALUES (?, ?)");
+        $statement->execute([$parent_id, $title]);
 
-
-
-        // TODO: check id in sql!
-        $this->checkId($id);
+        $this->db->commit();
     }
 
 
     public function deleteFolder($id)
     {
+
         $this->checkId($id);
     }
 
