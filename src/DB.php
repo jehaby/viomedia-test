@@ -35,7 +35,7 @@ class DB extends PDO
     private function checkQueryResult($res, $errorMessage)
     {
         if ($res === false) {
-            print_r($this->db->errorInfo());
+            print_r($this->errorInfo());
         } else {
             if ($errorMessage != NULL) {
                 echo $errorMessage;

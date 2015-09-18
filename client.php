@@ -10,8 +10,11 @@ if (isset($argv[1]) && $argv[1] === 'm') {
     $migration = new Migration();
     $migration->migrate();
     $migration->seed();
+    die();
 }
 
 $dm = new DataManager();
+$dm->createFolder(13, 'heheheh');
+
 
 
