@@ -5,8 +5,7 @@ require 'vendor/autoload.php';
 use Jehaby\Viomedia\Migration;
 use Jehaby\Viomedia\DataManager;
 
-
-if (isset($argv[1]) && $argv[1] === 'm') {
+if ($argc > 1 && in_array('m', $argv)) {
     $migration = new Migration();
     $migration->migrate();
     $migration->seed();
@@ -14,7 +13,11 @@ if (isset($argv[1]) && $argv[1] === 'm') {
 }
 
 $dm = new DataManager();
-$dm->createFolder(13, 'heheheh');
+//$dm->createFolder(15, 'heheheh');
+
+//print_r($dm->getAllNodes(0));
+
+var_dump($dm->deleteFolder(1));
 
 
 

@@ -5,6 +5,7 @@ namespace Jehaby\Viomedia;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 
 
 class DB extends PDO
@@ -20,6 +21,7 @@ class DB extends PDO
         }
     }
 
+
     public function exec($statement, $errorMessage = NULL)
     {
         try {
@@ -32,6 +34,7 @@ class DB extends PDO
         }
     }
 
+
     private function checkQueryResult($res, $errorMessage)
     {
         if ($res === false) {
@@ -41,6 +44,26 @@ class DB extends PDO
                 echo $errorMessage;
             }
         }
+    }
+
+
+    public function prepare($statement, array $driver_options = array())
+    {
+        if (! $res = parent::prepare($statement, $driver_options)) {
+            var_dump($this->errorInfo());
+            die();
+        }
+        return $res;
+    }
+
+
+    public function executeStatement(PDOStatement $statement, $input_parameters = null)
+    {
+        if (! $statement->execute($input_parameters)) {
+            var_dump($statement->errorInfo());
+            die();
+        }
+        return true;
     }
 
 
