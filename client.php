@@ -13,9 +13,12 @@ if ($argc > 1 && in_array('m', $argv)) {
 }
 
 $dm = new DataManager();
+
+print_r($dm->getAllNodes(10));
+die();
+
 //$dm->createFolder(15, 'heheheh');
 
-//print_r($dm->getAllNodes(0));
 
 var_dump($dm->deleteFolder(1));
 

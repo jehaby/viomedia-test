@@ -60,7 +60,7 @@ ORDER BY lvl;
         }
 
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
-        $statement->execute();
+        $this->db->executeStatement($statement);
         return $statement->fetchAll(PDO::FETCH_ASSOC); // TODO: try catch
     }
 
@@ -82,13 +82,13 @@ ORDER BY lvl;
     private function getAllChildFolders($folderId)
     {
         $statement = $this->db->prepare('
-SELECT folder_id FROM all_ancestor_folders
-WHERE ancestor_id = :folder_id
-UNION SELECT id FROM folders WHERE parent_id = :folder_id OR id = :folder_id;
+SELECT aaf.folder_id, f.lvl FROM all_ancestor_folders aaf JOIN folders f
+WHERE aaf.ancestor_id = :folder_id
+UNION SELECT f.id, f.lvl FROM folders f WHERE f.parent_id = :folder_id OR f.id = :folder_id ORDER BY lvl;
 ');
-        $statement->bindValue(':folder_id', $folderId);
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
+        $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
+        $this->db->executeStatement($statement);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
@@ -97,19 +97,22 @@ UNION SELECT id FROM folders WHERE parent_id = :folder_id OR id = :folder_id;
         $statement = $this->db->prepare('insert into nodes(val, folder_id) values (:val, :folder_id)');
         $statement->bindValue(':val', $value, PDO::PARAM_STR);
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
-        $statement->execute();
+        $this->db->executeStatement($statement);
     }
 
 
     public function getAllNodes($folderId) //
     {
+
+        var_dump($this->getAllChildFolders($folderId));
+
         $statement = $this->db->prepare('
 SELECT * FROM nodes WHERE folder_id IN (
 SELECT folder_id from all_ancestor_folders WHERE ancestor_id = :folder_id
 UNION SELECT id from folders WHERE parent_id = :folder_id OR id = :folder_id);
         ');
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
-        $statement->execute();
+        $this->db->executeStatement($statement);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
