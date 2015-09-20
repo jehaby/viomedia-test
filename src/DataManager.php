@@ -82,9 +82,9 @@ ORDER BY lvl;
     private function getAllChildFolders($folderId)
     {
         $statement = $this->db->prepare('
-SELECT aaf.folder_id, f.lvl FROM all_ancestor_folders aaf JOIN folders f
-WHERE aaf.ancestor_id = :folder_id
-UNION SELECT f.id, f.lvl FROM folders f WHERE f.parent_id = :folder_id OR f.id = :folder_id ORDER BY lvl;
+SELECT folder_id, lvl FROM all_ancestor_folders JOIN folders
+WHERE ancestor_id = :folder_id
+UNION SELECT id, lvl FROM folders WHERE parent_id = :folder_id OR id = :folder_id ORDER BY lvl;
 ');
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
         $this->db->executeStatement($statement);
