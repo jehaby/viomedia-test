@@ -6,6 +6,9 @@ namespace Jehaby\Viomedia;
 use PDO;
 use PDOException;
 use PDOStatement;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 
 
 class DB extends PDO
@@ -19,6 +22,8 @@ class DB extends PDO
             echo $e->getMessage();
             die();
         }
+
+        $this->logger = new Logger('the_logger', [ new StreamHandler(__DIR__ . 'viomedia-test.log') ] );
     }
 
 
@@ -29,20 +34,16 @@ class DB extends PDO
             $this->checkQueryResult($res, $errorMessage);
             return $res;
         } catch (PDOException $e) {
-            echo $e->getMessage();
-            die();
+            $this->logger->addError("Error in DB::" . __METHOD__ . ': '.  $e->getMessage());
         }
     }
-
 
     private function checkQueryResult($res, $errorMessage)
     {
         if ($res === false) {
-            print_r($this->errorInfo());
-        } else {
-            if ($errorMessage != NULL) {
-                echo $errorMessage;
-            }
+            $this->logger->addError("Error in DB::" . __METHOD__ . ': '.  json_encode($this->errorInfo()));
+        } elseif ($errorMessage != NULL) {
+            $this->logger->addError("Error in DB::" . __METHOD__ . ': '.  $errorMessage);
         }
     }
 
@@ -50,20 +51,42 @@ class DB extends PDO
     public function prepare($statement, array $driver_options = array())
     {
         if (! $res = parent::prepare($statement, $driver_options)) {
-            var_dump($this->errorInfo());
-            die();
+            $this->logger->addError("Error in DB::prepare: " . $this->errorInfo());
         }
         return $res;
     }
 
 
-    public function executeStatement(PDOStatement $statement, $input_parameters = null)
+    public function executeStatement(PDOStatement $statement, $inputParameters = null)
     {
-        if (! $statement->execute($input_parameters)) {
-            var_dump($statement->errorInfo());
-            die();
+        if (! $res = $statement->execute($inputParameters)) {
+            $errorInfo = json_encode($statement->errorInfo());
+            $queryString = $statement->queryString;
+            $this->logger->addWarning(
+<<<MSG
+            Something wrong in DB::executeStatement. ${errorInfo}
+            queryString: $queryString
+            inputParameters: $inputParameters
+MSG
+            );
         }
-        return true;
+        return $res;
+    }
+
+    public function bindValue(PDOStatement $statement, $parameter, $value, $data_type = PDO::PARAM_STR)
+    {
+        try {
+            if (! $res = $statement->bindValue($parameter, $value, $data_type) ) {
+                $this->logger->addWarning("Error in DB::bindValue: couldn't bind value." .
+                    " | queryString: " . $statement->queryString .
+                    " | parameter: " . $parameter .
+                    " | value: " . $value
+                );
+            }
+            return $res;
+        } catch (PDOException $e) {
+            $this->logger->addError("Error in DB::bindValue: " . $e->getMessage());
+        }
     }
 
 

@@ -1,0 +1,82 @@
+folders:
+  -
+    id: 0
+    parent_id:
+    title:
+    lvl: 0
+  -
+    id: 1
+    parent_id: 0
+    title:
+    lvl: 1
+  -
+    id: 5
+    parent_id: 0
+    title:
+    lvl: 1
+  -
+    id: 10
+    parent_id: 1
+    title:
+    lvl: 2
+  -
+    id: 13
+    parent_id: 10
+    title:
+    lvl: 3
+  -
+    id: 15
+    parent_id: 10
+    title:
+    lvl: 3
+
+nodes:
+  -
+    id: 1
+    val: "bob"
+    folder_id: 0
+  -
+    id: 2
+    val: "joe"
+    folder_id: 0
+  -
+    id: 3
+    val: "steve"
+    folder_id: 1
+  -
+    id: 5
+    val: "mark"
+    folder_id: 10
+  -
+    id: 4
+    val: "alice"
+    folder_id: 10
+  -
+    id: 6
+    val: "donald"
+    folder_id: 13
+  -
+    id: 7
+    val: "fred"
+    folder_id: 13
+  -
+    id: 8
+    val: "kevin"
+    folder_id: 15
+
+all_ancestor_folders:
+  -
+    folder_id: 10
+    ancestor_id: 0
+  -
+    folder_id: 13
+    ancestor_id: 1
+  -
+    folder_id: 15
+    ancestor_id: 1
+  -
+    folder_id: 13
+    ancestor_id: 0
+  -
+    folder_id: 15
+    ancestor_id: 0

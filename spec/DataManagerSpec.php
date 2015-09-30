@@ -15,7 +15,7 @@ class DataManagerSpec extends ObjectBehavior
 
     public function adds_folder_to_root()
     {
-        $this->addFolder('test1', );
+        $this->addFolder('test1', '');
 
     }
 

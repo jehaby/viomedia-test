@@ -2,19 +2,24 @@
     "name": "jehaby/viomedia-test",
     "description": "Test task for viomedia",
     "authors": [
-	{
-	    "name": "Stas Makarov",
-	    "email": "jehaby@ya.ru"
-	}
+        {
+            "name": "Stas Makarov",
+            "email": "jehaby@ya.ru"
+        }
     ],
 
     "require-dev": {
-        "phpspec/phpspec": "~2.0"
+        "phpspec/phpspec": "~2.0",
+        "phpunit/phpunit": "^4.8",
+        "phpunit/dbunit": "^1.4"
     },
     "config": {
         "bin-dir": "bin"
     },
     "autoload": {
-	"psr-4": {"Jehaby\\Viomedia\\": "src/"}
+        "psr-4": {"Jehaby\\Viomedia\\": "src/"}
+    },
+    "require": {
+        "monolog/monolog": "^1.17"
     }
 }
