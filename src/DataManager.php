@@ -91,7 +91,7 @@ ORDER BY lvl;
 
     public function deleteFolder($folderId)
     {
-        $childFolders = implode(',', $this->getAllChildFolders($folderId, true));
+        $childFolders = implode(',', $this->getFolderIdWithChildren($folderId, true));
 
         $this->db->beginTransaction();
 
@@ -103,7 +103,7 @@ ORDER BY lvl;
     }
 
 
-    private function getAllChildFolders($folderId, $dontGroup = false)
+    private function getFolderIdWithChildren($folderId, $dontGroupByLevel = false)
     {
         $statement = $this->db->prepare('
 SELECT f.lvl, aaf.folder_id FROM all_ancestor_folders aaf JOIN folders f ON aaf.folder_id = f.id
@@ -114,11 +114,17 @@ UNION SELECT lvl, f.id FROM folders f WHERE parent_id = :folder_id OR id = :fold
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
         $this->db->executeStatement($statement);
 
-        if ($dontGroup) {
-            return $statement->fetchAll(PDO::FETCH_COLUMN, 1);
+        if ($dontGroupByLevel) {
+            $res = $statement->fetchAll(PDO::FETCH_COLUMN, 1);
+        } else {
+            $res = $statement->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
         }
 
-        return $statement->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_NUM);
+        if (empty($res)) {
+            throw new \LogicException('There is no folder with such id');
+        }
+
+        return $res;
     }
 
 
@@ -131,25 +137,34 @@ UNION SELECT lvl, f.id FROM folders f WHERE parent_id = :folder_id OR id = :fold
     }
 
 
-    public function getAllNodes($folderId) //
+    public function getAllNodes($folderId, $dontGroupByLevel = false) //
     {
 
-        print_r($childFolders = $this->getAllChildFolders($folderId));
+        $folders = $this->getFolderIdWithChildren($folderId);
 
         $statement = $this->db->prepare('
-SELECT * FROM nodes WHERE folder_id IN (
+SELECT folder_id, id, val FROM nodes WHERE folder_id IN (
 SELECT folder_id from all_ancestor_folders WHERE ancestor_id = :folder_id
 UNION SELECT id from folders WHERE parent_id = :folder_id OR id = :folder_id);
         ');
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
         $this->db->executeStatement($statement);
-        $nodes = $statement->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
+        $nodes = $statement->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
-        print_r($nodes);
-
-        return $nodes;
+        return $dontGroupByLevel ? $nodes : $this->groupNodesByLevel($folders, $nodes);
     }
 
+
+    private function groupNodesByLevel($folders, $nodes)
+    {
+        foreach ($folders as $level => $foldersOnOneLevel) {
+            foreach ($foldersOnOneLevel as $i => $folderId) {
+                $folders[$level][$folderId] = isset($nodes[$folderId]) ? $nodes[$folderId] : [];
+                unset($folders[$level][$i]);
+            }
+        }
+        return $folders;
+    }
 
 
     public function changeParentForFolder($folderId, $newParentId = null)
@@ -173,8 +188,6 @@ UNION SELECT id from folders WHERE parent_id = :folder_id OR id = :folder_id);
         $statement->bindValue(':node_id', $nodeId);
         $this->db->executeStatement($statement);
     }
-
-
 
 
 }

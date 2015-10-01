@@ -52,7 +52,27 @@ if ($argc > 1) {
 
 }
 
-$dm->createFolder(0);
+$dm->insertNode('sdjlfksjdf', 666);
+
+return;
+
+//$dm->getAllNodes(13);
+//var_dump($dm->getAllNodes(13));
+print_r($dm->getAllNodes(13));
+return;
+
+$reflector = new \ReflectionClass('Jehaby\Viomedia\DataManager'); // TODO: try without namespace
+$method = $reflector->getMethod('getFolderIdWithChildren');
+$method->setAccessible(true);
+
+var_dump($method->invokeArgs($dm, [666]));
+return;
+
+
+
+$dm->deleteFolder(0);
+
+$dm->createFolder(666);
 die();
 
 $dm->getAllNodes(666);

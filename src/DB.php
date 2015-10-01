@@ -69,9 +69,13 @@ class DB extends PDO
             inputParameters: $inputParameters
 MSG
             );
+            if ($statement->errorCode() === '23000') {
+                throw new \LogicException('There is no folder with such id');
+            }
         }
         return $res;
     }
+
 
     public function bindValue(PDOStatement $statement, $parameter, $value, $data_type = PDO::PARAM_STR)
     {
