@@ -17,7 +17,7 @@ class DataManager
     }
 
 
-    public function createFolder($parentId = NULL, $title = NULL)  // TODO: if parentId doesn't exist, should return false
+    public function createFolder($parentId = NULL, $title = NULL)
     {
         $fullPath = $this->getFullPath($parentId);
         $lvl = empty($fullPath) ? 0 : $fullPath[count($fullPath) -1]['lvl'] + 1;
@@ -61,7 +61,7 @@ ORDER BY lvl;
         $statement->bindValue(':folder_id', $folderId, PDO::PARAM_INT);
         $this->db->executeStatement($statement);
 
-        $res = $statement->fetchAll(PDO::FETCH_ASSOC); // TODO: try catch?
+        $res = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($res)) {
             throw new \LogicException('There is no folder with such id');
@@ -72,8 +72,6 @@ ORDER BY lvl;
 
 
     /**
-     * @param $newFolderId
-     * @param $fullPath
      * @return string
      */
     private function createAllAncestorFoldersValuesString($newFolderId, $fullPath)
@@ -164,20 +162,6 @@ UNION SELECT id from folders WHERE parent_id = :folder_id OR id = :folder_id);
             }
         }
         return $folders;
-    }
-
-
-    public function changeParentForFolder($folderId, $newParentId = null)
-    {
-        // change records in all_ancestor_folders,
-        //
-        // folders, nodes
-
-        $this->db->beginTransaction();
-
-
-
-        $this->db->commit();
     }
 
 
