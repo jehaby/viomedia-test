@@ -1,0 +1,4 @@
+users:
+  -
+    id: 42
+    storage: a:3:{s:4:"home";a:3:{s:4:"city";s:5:"Miami";s:5:"state";s:2:"FL";s:8:"location";a:2:{s:3:"lan";d:40;s:4:"long";d:50;}}s:4:"work";a:2:{s:4:"main";a:2:{s:4:"role";s:5:"cheif";s:7:"address";s:9:"Miami, FL";}s:5:"hobby";a:2:{s:4:"role";s:7:"painter";s:7:"address";N;}}s:3:"age";i:68;}

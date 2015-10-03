@@ -51,7 +51,7 @@ class DB extends PDO
     public function prepare($statement, array $driver_options = array())
     {
         if (! $res = parent::prepare($statement, $driver_options)) {
-            $this->logger->addError("Error in DB::prepare: " . $this->errorInfo());
+            $this->logger->addError("Error in DB::prepare: " . json_encode($this->errorInfo()));
         }
         return $res;
     }

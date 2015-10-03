@@ -1,9 +1,23 @@
 <?php
 
+
+
 require 'vendor/autoload.php';
 
 use Jehaby\Viomedia\Migration;
 use Jehaby\Viomedia\DataManager;
+use Jehaby\Viomedia\User;
+
+
+
+$user = User::getInstance(42);
+
+return;
+
+$user->set('some\\really\\very\\long\\key', '1');
+print_r($r = $user->get('some'));
+
+return;
 
 if ($argc > 1 && in_array('m', $argv)) {
     $migration = new Migration();

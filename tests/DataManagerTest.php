@@ -43,7 +43,7 @@ class DataManagerTest extends \PHPUnit_Extensions_Database_TestCase
     protected function getDataSet()
     {
 
-        return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet(dirname(__FILE__) . '/_files/dataset.yml');
+        return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet(dirname(__FILE__) . '/_files/dataset_1.yml');
         // TODO: Implement getDataSet() method.
     }
 
